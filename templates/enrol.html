@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's set up your online access - Wells Fargo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- GLOBAL SETUP & DESIGN SYSTEM --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --wf-red: #D71E28;
+            --wf-gold: #FAD105;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --border-color: #A6A6A6;
+            --bg-canvas: #FAF6F0;
+        }
+
+        body {
+            color: var(--text-dark);
+            background-color: var(--bg-canvas);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0066CC;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- STICKY HEADER FRAME --- */
+        header {
+            background-color: var(--wf-red);
+            color: #FFFFFF;
+            padding: 12px 0;
+            border-bottom: 4px solid var(--wf-gold);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* --- MOBILE TOGGLE COMPONENTS --- */
+        .mobile-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+        }
+        .mobile-nav-toggle span {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .mobile-nav-toggle i {
+            font-size: 22px;
+        }
+
+        /* --- MOBILE SIDE MENU DRAWER (closeres.PNG) --- */
+        .mobile-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100%;
+            background-color: #FAF6F0;
+            z-index: 1001;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-drawer.open {
+            right: 0;
+        }
+
+        .drawer-close-btn {
+            background-color: #8C1D24;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            align-self: flex-end;
+        }
+        .drawer-close-btn i { font-size: 20px; }
+        .drawer-close-btn span { font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+
+        .drawer-search-container {
+            padding: 15px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #D6D1CA;
+            position: relative;
+        }
+        .drawer-search-container input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #D6D1CA;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #FAF6F0;
+        }
+        .drawer-search-container i {
+            position: absolute;
+            left: 28px;
+            top: 28px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .drawer-section-title {
+            background-color: #F6C200;
+            color: var(--text-dark);
+            font-weight: bold;
+            padding: 15px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .drawer-nav-list {
+            list-style: none;
+            background-color: #FFFFFF;
+        }
+        .drawer-nav-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid #EFECE8;
+            font-size: 15px;
+            color: #444;
+            cursor: pointer;
+        }
+        .drawer-nav-item i {
+            color: #4A154B;
+            font-size: 14px;
+        }
+
+        /* Dark background overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* --- WALLPAPER CANVAS BASE (toenrol.jpg layout) --- */
+        .wallpaper-container {
+            flex: 1;
+            background: linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            padding: 120px 20px 60px 20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- CENTRAL ENROLL CARD --- */
+        .enroll-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 680px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Mini language switcher inside card layout */
+        .card-lang-switcher {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #333;
+        }
+        .card-lang-switcher i {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .enroll-card h1 {
+            font-size: 32px;
+            font-weight: normal;
+            color: #D71E28;
+            text-align: center;
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+
+        .enroll-card .subtitle {
+            font-size: 15px;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Native Clean Form Setup */
+        .form-frame {
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 50px 14px 4px;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 17px;
+            outline: none;
+            color: var(--text-dark);
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-bottom: 2px solid #333333;
+        }
+
+        /* Dynamic floating behavior placeholder simulation */
+        .input-group input::placeholder {
+            color: #757575;
+            font-size: 16px;
+        }
+
+        .input-group .field-action-link {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            font-weight: bold;
+            color: #0066CC;
+            cursor: pointer;
+        }
+
+        .input-explanation-link {
+            font-size: 12px;
+            margin-bottom: 24px;
+            padding-left: 4px;
+        }
+
+        .options-group {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 4px;
+        }
+
+        .options-group input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .options-group label {
+            font-size: 14px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .already-enrolled-box {
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 35px;
+            padding-left: 4px;
+        }
+
+        /* Footer Action Layout Alignments */
+        .form-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: none;
+            color: #0066CC;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-cancel:hover {
+            text-decoration: underline;
+        }
+
+        .btn-continue {
+            width: 140px;
+            background-color: #E2E0DD;
+            color: #767472;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 24px;
+            cursor: not-allowed;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-continue.active-ready {
+            background-color: var(--wf-red);
+            color: #FFFFFF;
+            cursor: pointer;
+        }
+
+        /* --- COMPLIANCE BOTTOM DISCLOSURE FOOTER --- */
+        footer {
+            background-color: #FAF6F0;
+            padding: 30px 20px;
+            border-top: 1px solid #E5E0DA;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-link-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 15px;
+            justify-content: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .footer-link-grid a {
+            color: #555555;
+        }
+
+        .footer-copyright {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* --- MOBILE ACCESS RESPONSIVENESS BREAKS --- */
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block; /* Show hamburger button layout perfectly */
+            }
+
+            .card-lang-switcher {
+                position: static;
+                margin-bottom: 15px;
+                justify-content: flex-end;
+            }
+
+            .wallpaper-container {
+                background: var(--bg-canvas); /* Drop heavy card image decoration for clear performance */
+                padding: 90px 15px 30px 15px;
+            }
+
+            .enroll-card {
+                box-shadow: none;
+                border: none;
+                padding: 10px 5px;
+            }
+
+            .enroll-card h1 {
+                font-size: 24px;
+            }
+
+            .form-frame {
+                max-width: 100%;
+            }
+
+            .form-actions-row {
+                flex-direction: column-reverse;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .btn-continue {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .footer-link-grid {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
+
+    <div class="mobile-menu-drawer" id="mobileDrawer">
+        <div class="drawer-close-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-xmark"></i>
+            <span>Close</span>
+        </div>
+        <div class="drawer-search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search">
+        </div>
+        <div class="drawer-section-title">Personal</div>
+        <ul class="drawer-nav-list">
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Checking <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Savings & CDs <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Credit Cards <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Home Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Personal Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Auto Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Premier <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item" onclick="toggleMobileMenu()">Education & Tools <i class="fa-solid fa-chevron-right"></i></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">Wells Fargo</div>
+            
+            <button class="mobile-nav-toggle" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="wallpaper-container">
+        
+        <section class="enroll-card">
+            <div class="card-lang-switcher">
+                <i class="fa-solid fa-globe"></i>
+                <a href="#">Español</a>
+            </div>
+
+            <h1>Let's set up your online access</h1>
+            <p class="subtitle">First, we need some information from you.</p>
+
+            <div class="form-frame">
+                <form id="enrollAccessForm" onsubmit="event.preventDefault();">
+                    
+                    <div class="input-group">
+                        <input type="password" id="ssnField" placeholder="SSN or ITIN" oninput="checkFormEnrolFields()">
+                        <span class="field-action-link" id="ssnMaskToggle" onclick="toggleSsnMasking()">Show</span>
+                    </div>
+                    <div class="input-explanation-link">
+                        <a href="#">Why do we ask for this?</a>
+                    </div>
+
+                    <div class="options-group">
+                        <input type="checkbox" id="noSsnCheckbox" onchange="handleNoSsnToggle()">
+                        <label Milford for="noSsnCheckbox">I don't have an SSN or ITIN</label>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 25px;">
+                        <input type="text" id="dobField" placeholder="Date of Birth" oninput="checkFormEnrolFields()">
+                    </div>
+
+                    <div class="already-enrolled-box">
+                        Already enrolled? <a href="signon.html">Sign On Now</a>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <button type="button" class="btn-cancel" onclick="window.location.href='signon.html'">Cancel</button>
+                        <button type="submit" class="btn-continue" id="enrolSubmitBtn" disabled>Continue</button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-link-grid">
+                <a href="#">Privacy, Cookies, Security & Legal</a>
+                <a href="#">Notice of Data Collection</a>
+                <a href="#">Do not sell or share my personal information</a>
+            </div>
+            <div class="footer-copyright">
+                © 1999 - 2026 Wells Fargo. All rights reserved. NMLSR ID 399801
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const ssnField = document.getElementById('ssnField');
+        const dobField = document.getElementById('dobField');
+        const noSsnCheckbox = document.getElementById('noSsnCheckbox');
+        const ssnToggle = document.getElementById('ssnMaskToggle');
+        const submitBtn = document.getElementById('enrolSubmitBtn');
+
+        // Core Sidebar Hamburger Animations
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('menuOverlay');
+            
+            if(drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            } else {
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Inline Field Masking Mechanics
+        function toggleSsnMasking() {
+            if (ssnField.type === 'password') {
+                ssnField.type = 'text';
+                ssnToggle.textContent = 'Hide';
+            } else {
+                ssnField.type = 'password';
+                ssnToggle.textContent = 'Show';
+            }
+        }
+
+        // Handlers for "No SSN Checkbox" Selection
+        function handleNoSsnToggle() {
+            if (noSsnCheckbox.checked) {
+                ssnField.value = '';
+                ssnField.disabled = true;
+                ssnField.style.backgroundColor = '#f0f0f0';
+                ssnField.placeholder = "SSN or ITIN (Not required)";
+            } else {
+                ssnField.disabled = false;
+                ssnField.style.backgroundColor = 'transparent';
+                ssnField.placeholder = "SSN or ITIN";
+            }
+            checkFormEnrolFields();
+        }
+
+        // Active State Button Verification
+        function checkFormEnrolFields() {
+            const isSsnValid = noSsnCheckbox.checked || (ssnField.value.trim().length > 0);
+            const isDobValid = dobField.value.trim().length > 0;
+
+            if (isSsnValid && isDobValid) {
+                submitBtn.removeAttribute('disabled');
+                submitBtn.classList.add('active-ready');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
+                submitBtn.classList.remove('active-ready');
+            }
+        }
+    </script>
+</body>
+</html>

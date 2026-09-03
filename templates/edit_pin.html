@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Transaction PIN</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    width:100%;
+    max-width:420px;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,.1);
+}
+
+.card h2{
+    margin-bottom:10px;
+    color:#222;
+}
+
+.card p{
+    color:#666;
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+.pin-display{
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:38px;
+    letter-spacing:18px;
+    margin-bottom:25px;
+    font-weight:bold;
+}
+
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.key{
+    height:75px;
+    border:none;
+    background:#f7f7f7;
+    font-size:28px;
+    font-weight:bold;
+    border-radius:15px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.key:hover{
+    background:#ececec;
+}
+
+.key:active{
+    transform:scale(.96);
+}
+
+.submit-btn{
+    margin-top:20px;
+    width:100%;
+    background:#D71E28;
+    color:white;
+    border:none;
+    padding:16px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.submit-btn:hover{
+    background:#b91821;
+}
+
+.submit-btn:disabled{
+    background:#bbb;
+    cursor:not-allowed;
+}
+
+.error{
+    color:#D71E28;
+    font-size:14px;
+    margin-bottom:15px;
+    min-height:20px;
+}
+
+@media(max-width:480px){
+
+    body{
+        padding:15px;
+    }
+
+    .card{
+        max-width:100%;
+        padding:25px 20px;
+        border-radius:16px;
+    }
+
+    .pin-display{
+        font-size:34px;
+        letter-spacing:14px;
+    }
+
+    .key{
+        height:68px;
+        font-size:24px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Edit Transaction PIN</h2>
+
+    <p id="instruction">
+        Enter a new 4-digit PIN
+    </p>
+
+    <div class="error" id="error"></div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="pin-display" id="display">
+            ○ ○ ○ ○
+        </div>
+
+        <input
+            type="hidden"
+            name="pin"
+            id="pin"
+        >
+
+        <input
+            type="hidden"
+            name="confirm_pin"
+            id="confirm_pin"
+        >
+
+        <div class="keypad">
+
+            <button type="button" class="key" onclick="addDigit('1')">1</button>
+            <button type="button" class="key" onclick="addDigit('2')">2</button>
+            <button type="button" class="key" onclick="addDigit('3')">3</button>
+
+            <button type="button" class="key" onclick="addDigit('4')">4</button>
+            <button type="button" class="key" onclick="addDigit('5')">5</button>
+            <button type="button" class="key" onclick="addDigit('6')">6</button>
+
+            <button type="button" class="key" onclick="addDigit('7')">7</button>
+            <button type="button" class="key" onclick="addDigit('8')">8</button>
+            <button type="button" class="key" onclick="addDigit('9')">9</button>
+
+            <button type="button" class="key" onclick="clearPin()">C</button>
+            <button type="button" class="key" onclick="addDigit('0')">0</button>
+            <button type="button" class="key" onclick="backspace()">←</button>
+
+        </div>
+
+        <button
+            type="submit"
+            class="submit-btn"
+            id="saveBtn"
+            disabled>
+            Save New PIN
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+let pin = "";
+let confirmPin = "";
+let step = 1;
+
+function addDigit(num){
+
+    document.getElementById("error").innerText = "";
+
+    if(step === 1){
+
+        if(pin.length < 4){
+
+            pin += num;
+
+            updateDisplay();
+
+            if(pin.length === 4){
+
+                setTimeout(() => {
+
+                    step = 2;
+
+                    document.getElementById(
+                        "instruction"
+                    ).innerText =
+                    "Re-enter PIN to confirm";
+
+                    updateDisplay();
+
+                },300);
+            }
+        }
+
+    }else{
+
+        if(confirmPin.length < 4){
+
+            confirmPin += num;
+
+            updateDisplay();
+
+            if(confirmPin.length === 4){
+
+                if(pin !== confirmPin){
+
+                    document.getElementById(
+                        "error"
+                    ).innerText =
+                    "PINs do not match";
+
+                    setTimeout(() => {
+
+                        confirmPin = "";
+
+                        updateDisplay();
+
+                    },1000);
+                }
+            }
+        }
+    }
+}
+
+function clearPin(){
+
+    if(step === 1){
+        pin = "";
+    }else{
+        confirmPin = "";
+    }
+
+    updateDisplay();
+}
+
+function backspace(){
+
+    if(step === 1){
+        pin = pin.slice(0,-1);
+    }else{
+        confirmPin = confirmPin.slice(0,-1);
+    }
+
+    updateDisplay();
+}
+
+function updateDisplay(){
+
+    let current =
+        step === 1 ? pin : confirmPin;
+
+    let display = "";
+
+    for(let i = 0; i < 4; i++){
+
+        display += i < current.length
+            ? "● "
+            : "○ ";
+    }
+
+    document.getElementById(
+        "display"
+    ).innerHTML = display;
+
+    document.getElementById(
+        "pin"
+    ).value = pin;
+
+    document.getElementById(
+        "confirm_pin"
+    ).value = confirmPin;
+
+    document.getElementById(
+        "saveBtn"
+    ).disabled =
+        !(pin.length === 4 &&
+          confirmPin.length === 4 &&
+          pin === confirmPin);
+}
+
+</script>
+
+</body>
+</html>
+

