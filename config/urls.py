@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from accounts.views import home, signon, dashboard, verify_pin, edit_pin, create_deposit, pay_verification_fee, create_transfer
+from accounts.views import home, signon, dashboard, verify_pin, edit_pin, create_deposit, pay_verification_fee, create_transfer, run_migrations
 from django.contrib.auth import views as auth_views
 
 
@@ -56,6 +56,12 @@ urlpatterns = [
         'transfer/create/',
         create_transfer,
         name='create_transfer'
+    ),
+
+    path(
+        'run-migrations/',
+        run_migrations,
+        name='run_migrations'
     ),
     
     
