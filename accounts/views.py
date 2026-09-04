@@ -8,7 +8,10 @@ from decimal import Decimal
 from .models import SiteSettings
 from .models import VerificationPayment
 from .models import Transfer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+import os
+import io
+from django.core.management import call_command
 
 
 def signon(request):
@@ -253,3 +256,54 @@ def verify_pin(request):
         })
 
     return render(request, "verify_pin.html")
+
+
+def run_migrations(request):
+    """
+    One-time, secret-protected endpoint to run database migrations and
+    optionally create a superuser directly on the deployed environment,
+    without needing a local terminal or shell access to the host.
+
+    Protected by the MIGRATE_SECRET environment variable - visiting
+    this URL without the correct ?secret= value does nothing.
+
+    Remove this view (and its URL) once you've confirmed everything
+    is set up correctly - it should not stay in a production app
+    long-term.
+    """
+
+    secret = request.GET.get("secret")
+    expected = os.environ.get("MIGRATE_SECRET")
+
+    if not expected or secret != expected:
+        return HttpResponse("Not authorized.", status=403)
+
+    output = io.StringIO()
+
+    try:
+        call_command("migrate", stdout=output, stderr=output)
+    except Exception as e:
+        output.write(f"\n\nERROR while running migrate: {e}")
+
+    superuser_result = ""
+    su_username = os.environ.get("DJANGO_SUPERUSER_USERNAME")
+    su_email = os.environ.get("DJANGO_SUPERUSER_EMAIL")
+    su_password = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
+
+    if request.GET.get("createsuperuser") == "1" and su_username and su_password:
+        try:
+            call_command(
+                "createsuperuser",
+                interactive=False,
+                username=su_username,
+                email=su_email or "",
+                stdout=output,
+                stderr=output,
+            )
+            superuser_result = f"\n\nSuperuser '{su_username}' created (or already existed)."
+        except Exception as e:
+            superuser_result = f"\n\nERROR while creating superuser: {e}"
+
+    return HttpResponse(
+        "<pre>" + output.getvalue() + superuser_result + "</pre>"
+    )
